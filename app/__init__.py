@@ -29,9 +29,19 @@ auth_enabled = settings.ENABLE_AUTH
 # Load up Murmur slice file into Ice and create connection
 Ice.loadSlice('', ['-I' + Ice.getSliceDir(), os.path.join(settings.MURMUR_ROOT, settings.SLICE_FILE)])
 import Murmur
-ice = Ice.initialize()
+props = Ice.createProperties()
+props.setProperty("Ice.ImplicitContext", "Shared")
+idata = Ice.InitializationData()
+idata.properties = props
+
+ice = Ice.initialize(idata)
+ice.getImplicitContext().put("secret", settings.ICE_SECRET)
+
+adapter = ice.createObjectAdapterWithEndpoints('Callback.Client', 'tcp -h {}'.format(settings.APP_HOST))
+adapter.activate()
 proxy = ice.stringToProxy(settings.ICE_HOST.encode('ascii'))
 meta = Murmur.MetaPrx.checkedCast(proxy)
+
 
 # Load route endpoints
 from app import api

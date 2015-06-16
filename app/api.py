@@ -11,8 +11,8 @@ from datetime import timedelta
 from flask import request, jsonify, json, Response
 from flask.ext.classy import FlaskView, route
 
-from app import app, meta, auth, auth_enabled
-from app.utils import obj_to_dict, get_server_conf, get_server_port, get_all_users_count, conditional
+from app import app, meta, auth, auth_enabled, adapter
+from app.utils import obj_to_dict, get_server_conf, get_server_port, get_all_users_count, conditional, ServerCallback
 
 import Murmur
 
@@ -465,6 +465,16 @@ class ServersView(FlaskView):
 
         else:
             return jsonify(message="User session required.")
+
+    @conditional(auth.login_required, auth_enabled)
+    @route('<int:id>/test', methods=['GET'])
+    def testing (self, id):
+        """Some testing
+        """
+        s = meta.getServer(int(id))
+        serverprx = Murmur.ServerCallbackPrx.uncheckedCast(adapter.addWithUUID(ServerCallback(s)))
+        s.addCallback(serverprx)
+        return jsonify(message="Callback attached for: "+str(id))
 
 
 class StatsView(FlaskView):

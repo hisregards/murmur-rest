@@ -10,12 +10,13 @@ All default settings. No configuration required, unless you want to enable diges
 import os
 
 # Settings for running a local dev server with runserver.py
-APP_HOST = '0.0.0.0'
+APP_HOST = '127.0.0.1'
 APP_PORT = 5000
 APP_DEBUG = True
 
 # Ice connectivity
-ICE_HOST = 'Meta:tcp -h localhost -p 6502'
+ICE_HOST = 'Meta:tcp -h 127.0.0.1 -p 6502'
+ICE_SECRET = 'barrelsexpoundutmoststaffs'
 SLICE_FILE = 'Murmur.ice'
 
 # Default path of application

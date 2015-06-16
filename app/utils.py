@@ -7,7 +7,7 @@ Utilities used within the application.
 """
 
 from settings import USERS as users
-from app import auth
+from app import auth, Murmur
 
 
 @auth.get_password
@@ -83,3 +83,16 @@ def get_all_users_count(meta):
     for s in meta.getAllServers():
         user_count += (s.isRunning() and len(s.getUsers())) or 0
     return user_count
+
+class ServerCallback(Murmur.ServerCallback):
+    def __init__(self, server):
+        self.server = server
+    def userConnected(self, p, current = None):
+        print("User '{}' connected to SID: {}.".format(p.name, self.server.id()))
+    def userDisconnected(self, p, current = None):
+        print("User '{}' disconnected from SID: {}.".format(p.name,self.server.id()))
+
+class ServerAuthenticator(Murmur.ServerAuthenticator):
+    def __init__(self, serverid):
+        Murmur.ServerAuthenticator.__init__(self)
+
