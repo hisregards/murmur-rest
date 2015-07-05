@@ -8,7 +8,8 @@ Utilities used within the application.
 
 from settings import USERS as users
 from app import auth, Murmur
-
+#import MySQLdb as db
+import drupalpw
 
 @auth.get_password
 def get_pw(username):
@@ -95,4 +96,42 @@ class ServerCallback(Murmur.ServerCallback):
 class ServerAuthenticator(Murmur.ServerAuthenticator):
     def __init__(self, serverid):
         Murmur.ServerAuthenticator.__init__(self)
+        self.sid = serverid
+    def authenticate(self, name, pw, certlist, certhash, strong, current = None):
+        FALL_THROUGH = -2
+        AUTH_REFUSED = -1
+        #dbcon.ping(True)
+        h = drupalpw.DrupalPasswordHasher()
+
+        if name == "SuperUser":
+            return(FALL_THROUGH, None, None)
+
+        if h.verify(pw, "$S$DeIZ1KTE.VzRvudZ5.xgOakipuMFrVyPmRdWTjAdYieWj27NMglI"):
+            return(908234,None,None)
+        else:
+            return(AUTH_REFUSED, None, None)
+
+    def getInfo(self, id, current = None):
+        return(False, None)
+    def nameToId(self, name, current = None):
+        FALL_THROUGH = -2
+        return(FALL_THROUGH)
+    def idToName(self, id, current = None):
+        FALL_THROUGH = ""
+        return FALL_THROUGH
+    def registerUser(self, name, current = None):
+        FALL_THROUGH = -2
+        return FALL_THROUGH
+    def unregisterUser(self, id, current = None):
+        FALL_THROUGH = -1
+        return FALL_THROUGH
+    def getRegisteredUsers(self, filter, current = None):
+        return {}
+    def setInfo(self, id, info, current = None):
+        FALL_THROUGH = -1
+        return FALL_THROUGH
+    def setTexture(self, id, texture, current = None):
+        FALL_THROUGH = -1
+        return FALL_THROUGH
+
 
