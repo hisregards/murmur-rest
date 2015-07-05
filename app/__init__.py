@@ -40,8 +40,12 @@ ice.getImplicitContext().put("secret", settings.ICE_SECRET)
 adapter = ice.createObjectAdapterWithEndpoints('Callback.Client', 'tcp -h {}'.format(settings.APP_HOST))
 adapter.activate()
 proxy = ice.stringToProxy(settings.ICE_HOST.encode('ascii'))
-meta = Murmur.MetaPrx.checkedCast(proxy)
+meta = Murmur.MetaPrx.uncheckedCast(proxy)
 
+from callbacks import attachMeta, MetaCallback
+metacbprx = adapter.addWithUUID(MetaCallback())
+metacb = Murmur.MetaCallbackPrx.checkedCast(metacbprx)
+attachMeta(metacb)
 
 # Load route endpoints
 from app import api

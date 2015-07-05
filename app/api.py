@@ -12,7 +12,8 @@ from flask import request, jsonify, json, Response
 from flask.ext.classy import FlaskView, route
 
 from app import app, meta, auth, auth_enabled, adapter
-from app.utils import obj_to_dict, get_server_conf, get_server_port, get_all_users_count, conditional, ServerCallback, ServerAuthenticator
+from app.utils import obj_to_dict, get_server_conf, get_server_port, get_all_users_count, conditional
+from app.callbacks import ServerCallback, ServerAuthenticator
 
 import Murmur
 
@@ -472,6 +473,8 @@ class ServersView(FlaskView):
         """Some testing
         """
         s = meta.getServer(int(id))
+        #serverprx = Murmur.ServerCallbackPrx.uncheckedCast(adapter.addWithUUID(ServerCallback(s)))
+        #s.addCallback(serverprx)
         s.setAuthenticator(Murmur.ServerAuthenticatorPrx.uncheckedCast(adapter.addWithUUID(ServerAuthenticator(int(id)))))
         return jsonify(message="Callback attached for: "+str(id))
 
