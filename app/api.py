@@ -234,14 +234,14 @@ class ServersView(FlaskView):
         # Return 404 if not found
         if server is None:
             return jsonify(message="No Server Found for ID "+str(id)), 500
-        
+
         olduser = server.getRegistration(int(user))
-        
+
         if olduser is None:
             return jsonify(message="No User Found for ID "+str(user)), 500
-        
+
         server.unregisterUser(int(user))
-        
+
         json_data = {
             "user_id": user,
             "deleted": 'Success'
@@ -260,19 +260,19 @@ class ServersView(FlaskView):
         # Return 404 if not found
         if server is None:
             return jsonify(message="Not Found"), 404
-        
+
         username = request.form.get('username')
         password = request.form.get('password')
-        
+
         new_user = {
             Murmur.UserInfo.UserName: username,
             Murmur.UserInfo.UserPassword: password
         }
-        
+
         added = server.registerUser(new_user)
-        
+
         data = obj_to_dict(server.getRegistration(added))
-        
+
 
         json_data = {
             "user_id": added,
@@ -467,8 +467,8 @@ class ServersView(FlaskView):
             return jsonify(message="User session required.")
 
     @conditional(auth.login_required, auth_enabled)
-    @route('<int:id>/test', methods=['GET'])
-    def testing (self, id):
+    @route('<int:id>/authenticator', methods=['GET'])
+    def authenticator (self, id):
         """Some testing
         """
         s = meta.getServer(int(id))
@@ -507,4 +507,3 @@ StatsView.register(app)
 
 if __name__ == '__main__':
     app.run(debug=True)
-
