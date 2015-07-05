@@ -16,7 +16,7 @@ APP_DEBUG = True
 
 # Ice connectivity
 ICE_HOST = 'Meta:tcp -h 127.0.0.1 -p 6502'
-ICE_SECRET = 'barrelsexpoundutmoststaffs'
+ICE_SECRET = ''
 SLICE_FILE = 'Murmur.ice'
 
 # Default path of application
