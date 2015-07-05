@@ -8,11 +8,12 @@ Initialize murmur-rest project.
 :license:   MIT, see README for more details.
 """
 
-import os
+import os, sys
 
 from flask import Flask
 from flask.ext.httpauth import HTTPDigestAuth
 import settings
+import signal
 
 import Ice
 
@@ -40,12 +41,18 @@ ice.getImplicitContext().put("secret", settings.ICE_SECRET)
 adapter = ice.createObjectAdapterWithEndpoints('Callback.Client', 'tcp -h {}'.format(settings.APP_HOST))
 adapter.activate()
 proxy = ice.stringToProxy(settings.ICE_HOST.encode('ascii'))
-meta = Murmur.MetaPrx.uncheckedCast(proxy)
+meta = Murmur.MetaPrx.checkedCast(proxy)
 
-from callbacks import attachMeta, MetaCallback
+from callbacks import MetaCallback
 metacbprx = adapter.addWithUUID(MetaCallback())
 metacb = Murmur.MetaCallbackPrx.checkedCast(metacbprx)
-attachMeta(metacb)
+meta.addCallback(metacb)
+
+def removeCallback(signal, frame):
+    meta.removeCallback(metacb)
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, removeCallback)
 
 # Load route endpoints
 from app import api

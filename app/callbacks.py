@@ -8,15 +8,8 @@ Initialize murmur-rest project.
 :license:   MIT, see README for more details.
 """
 
-from app import Murmur, meta, adapter
-import drupalpw, time
-
-def attachMeta(metacb):
-
-    for i in range(1):
-        meta.addCallback(metacb)
-
-    print("metacb attached")
+from app import Murmur
+import drupalpw
 
 class MetaCallback(Murmur.MetaCallback):
     def __init__(self):

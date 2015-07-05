@@ -13,10 +13,9 @@ from flask.ext.classy import FlaskView, route
 
 from app import app, meta, auth, auth_enabled, adapter
 from app.utils import obj_to_dict, get_server_conf, get_server_port, get_all_users_count, conditional
-from app.callbacks import ServerCallback, ServerAuthenticator
+from app.callbacks import ServerCallback, ServerAuthenticator, MetaCallback
 
 import Murmur
-
 
 class ServersView(FlaskView):
     """
